@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>محرّر التصور البحثي — الدراسات الأدبية الجزائرية</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#8B6914;--gold-l:#c9a227;--gold-bg:rgba(139,105,20,0.07);--gold-border:rgba(139,105,20,0.22);
+  --teal:#0d4f4a;--teal-m:#1a7a73;--teal-bg:#e6f5f4;
+  --parch:#faf6ef;--parch-d:#f0e8d8;
+  --border:#c8b89a;--txt:#2c2418;--muted:#7a6a52;
+  --card:#ffffff;--side:#1c1510;
+}
+body{font-family:'Noto Sans Arabic',sans-serif;direction:rtl;background:var(--parch);color:var(--txt);min-height:100vh}
+.app{display:grid;grid-template-columns:262px 1fr;min-height:100vh}
+
+/* ── Sidebar ─────────────────────────── */
+.side{background:var(--side);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.side-hdr{padding:18px 16px 10px;border-bottom:1px solid rgba(201,162,39,.2);text-align:center}
+.side-title{font-family:'Amiri',serif;font-size:16px;color:#c9a227;line-height:1.5}
+.side-sub{font-size:10.5px;color:rgba(255,255,255,.35);margin-top:2px}
+.side-tools{display:flex;gap:7px;padding:9px 14px 0}
+.tool-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px 8px;border:1px solid rgba(255,255,255,.1);border-radius:7px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.55);font-family:'Noto Sans Arabic',sans-serif;font-size:11.5px;cursor:pointer;transition:all .2s}
+.tool-btn:hover{background:rgba(255,255,255,.09);color:#fff}
+.save-btn:hover{border-color:rgba(201,162,39,.45);color:#c9a227!important}
+.reset-btn:hover{border-color:rgba(192,80,58,.45);color:#e07060!important}
+.prog-wrap{padding:9px 14px 3px}
+.prog-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:rgba(255,255,255,.3);margin-bottom:4px}
+.prog-bar{height:3px;background:rgba(255,255,255,.07);border-radius:2px}
+.prog-fill{height:100%;background:linear-gradient(90deg,#8B6914,#c9a227);border-radius:2px;transition:width .4s}
+.nav{list-style:none;padding:4px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 15px;cursor:pointer;transition:all .2s;border-right:3px solid transparent;font-size:11.5px;color:rgba(255,255,255,.45)}
+.nav-item:hover{background:rgba(255,255,255,.04);color:rgba(255,255,255,.8)}
+.nav-item.active{background:rgba(201,162,39,.12);color:#c9a227;border-right-color:#c9a227}
+.nav-item.opt{color:rgba(255,255,255,.35)}
+.nav-item.opt.active{color:#c9a227}
+.n-num{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:600;flex-shrink:0}
+.nav-item.active .n-num{background:#c9a227;color:#1c1510}
+.nav-sep{height:1px;background:rgba(255,255,255,.07);margin:4px 14px}
+.nav-group-lbl{font-size:10px;color:rgba(255,255,255,.25);padding:6px 15px 2px;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── Main ────────────────────────────── */
+.main{padding:26px 36px;max-width:840px}
+.sec-hdr{margin-bottom:20px}
+.sec-badge{display:inline-flex;align-items:center;background:var(--teal-bg);color:var(--teal);padding:3px 11px;border-radius:20px;font-size:11.5px;font-weight:500;margin-bottom:7px}
+.sec-title{font-family:'Amiri',serif;font-size:23px;color:#1a1612;line-height:1.4}
+.sec-desc{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.7}
+.divider{height:1px;background:linear-gradient(90deg,var(--border),transparent);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
+.card-title{font-family:'Amiri',serif;font-size:14.5px;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--parch-d)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
+input[type=text],input[type=number],textarea,select{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:13px;color:var(--txt);background:#fff;transition:border-color .2s,box-shadow .2s;direction:rtl}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(139,105,20,.09)}
+textarea{resize:vertical;min-height:85px;line-height:1.75}
+.opt-label{font-size:10.5px;color:var(--muted);font-weight:400;margin-right:5px}
+.tip{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:8px;padding:9px 13px;margin-bottom:12px;font-size:12px;color:var(--gold);line-height:1.7}
+.tip strong{font-weight:600}
+.info-box{background:var(--teal-bg);border:1px solid rgba(13,79,74,.2);border-radius:8px;padding:9px 13px;margin-bottom:12px;font-size:12px;color:var(--teal);line-height:1.7}
+.wc{font-size:11px;padding:2px 8px;border-radius:10px;display:inline-flex;align-items:center;gap:3px;margin-top:4px}
+.wc.ok{background:var(--teal-bg);color:var(--teal)}
+.wc.warn{background:#fff3e0;color:#8B4513}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{padding:4px 11px;border:1px solid var(--border);border-radius:20px;background:#fff;font-family:'Noto Sans Arabic',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all .17s}
+.chip:hover{border-color:var(--gold);color:var(--gold);background:rgba(139,105,20,.04)}
+.chip:active{transform:scale(.96)}
+.tag-wrap{display:flex;gap:7px}
+.tag-wrap input{flex:1}
+.btn-tag{padding:8px 13px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{background:var(--teal-bg);color:var(--teal);padding:3px 10px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:4px}
+.tag button{background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;padding:0;line-height:1}
+.btn-add{display:flex;align-items:center;gap:5px;padding:7px 14px;border:1px dashed var(--border);border-radius:8px;background:transparent;color:var(--muted);font-family:'Noto Sans Arabic',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;width:100%;justify-content:center;margin-top:4px}
+.btn-add:hover{border-color:var(--gold);color:var(--gold);background:rgba(139,105,20,.03)}
+.li{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.li input,.li textarea{flex:1}
+.btn-rm{padding:7px;border:1px solid #f0d0c8;border-radius:7px;background:#fff;color:#c0503a;cursor:pointer;font-size:12px;flex-shrink:0;transition:all .2s;line-height:1}
+.btn-rm:hover{background:#fdf0ec;border-color:#c0503a}
+.radios{display:flex;flex-direction:column;gap:6px}
+.rlabel{display:flex;align-items:flex-start;gap:8px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12.5px;transition:all .2s;line-height:1.6}
+.rlabel:hover{border-color:var(--gold)}
+.rlabel input{margin-top:3px;accent-color:var(--teal);flex-shrink:0}
+.rlabel.on{border-color:var(--teal-m);background:var(--teal-bg);color:var(--teal)}
+.nav-btns{display:flex;gap:9px;margin-top:24px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap}
+.btn-next{padding:9px 22px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn-next:hover{background:var(--teal-m)}
+.btn-prev{padding:9px 18px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-prev:hover{border-color:var(--txt);color:var(--txt)}
+.btn-skip{padding:9px 18px;background:transparent;color:var(--muted);border:1px dashed var(--border);border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
+.btn-skip:hover{border-color:var(--teal);color:var(--teal)}
+.btn-word{padding:9px 20px;background:#1a56a0;color:#fff;border:none;border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn-word:hover{background:#2166c0}
+.btn-txt{padding:9px 20px;background:var(--gold);color:#fff;border:none;border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn-txt:hover{background:var(--gold-l)}
+
+/* plan */
+.ch-block{border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--card)}
+.ch-hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;padding:10px 13px;background:rgba(139,105,20,.05);border-bottom:1px solid var(--parch-d)}
+.ch-badge{background:var(--gold);color:#fff;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:9px;white-space:nowrap}
+.ch-hdr input{border:1px solid var(--parch-d);background:#fff;font-family:'Amiri',serif;font-size:14.5px;color:var(--txt);padding:4px 9px;border-radius:6px;width:100%}
+.ch-hdr input:focus{outline:none;border-color:var(--gold)}
+.btn-ch-rm{padding:4px 7px;border:1px solid #f0d0c8;border-radius:5px;background:#fff;color:#c0503a;cursor:pointer;font-size:11px}
+.ch-secs{padding:9px 13px 11px}
+.sec-row{display:flex;gap:7px;align-items:center;margin-bottom:6px}
+.sec-row input{flex:1;padding:6px 10px;border:1px solid var(--parch-d);border-radius:7px;font-family:'Noto Sans Arabic',sans-serif;font-size:12px;color:var(--txt);background:#fff}
+.sec-row input:focus{outline:none;border-color:var(--gold)}
+.sec-dot{width:5px;height:5px;border-radius:50%;background:var(--gold-l);flex-shrink:0}
+.btn-sec-add{font-size:11.5px;color:var(--muted);background:none;border:1px dashed var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .2s;font-family:'Noto Sans Arabic',sans-serif}
+.btn-sec-add:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sec-rm{padding:4px;border:1px solid #f0d0c8;border-radius:5px;background:#fff;color:#c0503a;cursor:pointer;font-size:11.5px;flex-shrink:0;line-height:1}
+/* cover preview */
+.cover-prev{border:1px solid var(--border);border-radius:10px;background:#fff;padding:24px;text-align:center}
+.cpv-title{font-family:'Amiri',serif;font-size:18px;color:var(--teal);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--gold)}
+.cpv-row{font-size:12.5px;margin-bottom:4px;color:var(--txt)}
+.cpv-row em{color:var(--muted);font-style:normal;font-size:11px}
+/* summary */
+.sum-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.sum-card h3{font-family:'Amiri',serif;font-size:15px;color:var(--gold);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--parch-d)}
+.sf{margin-bottom:7px}
+.sl{font-size:11px;color:var(--muted);margin-bottom:2px}
+.sv{font-size:12.5px;color:var(--txt);line-height:1.6}
+.done-banner{background:linear-gradient(135deg,var(--teal),#0a3d38);border-radius:12px;padding:18px;text-align:center;margin-bottom:18px;color:#fff}
+.done-banner h2{font-family:'Amiri',serif;font-size:19px;margin-bottom:5px;color:#c9a227}
+.done-banner p{font-size:12.5px;opacity:.75}
+/* TOC */
+.toc-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.toc-title{font-family:'Amiri',serif;font-size:18px;color:var(--txt);text-align:center;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid var(--parch-d)}
+.te{display:flex;align-items:baseline;gap:5px;margin-bottom:5px;font-size:13px}
+.te.l1{font-family:'Amiri',serif;font-size:14.5px;color:var(--txt);margin-top:8px;font-weight:700}
+.te.l2{padding-right:18px;color:var(--muted);font-size:12.5px}
+.te-dots{flex:1;border-bottom:1px dotted var(--border);margin:0 5px;margin-bottom:2px}
+/* toast */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:9px 20px;border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:12.5px;z-index:9999;pointer-events:none;transition:opacity .4s;white-space:nowrap}
+.toast.ok{background:var(--teal);color:#fff}
+.toast.err{background:#a32d2d;color:#fff}
+/* ── Terms of Use Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,14,8,.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:#fff;border-radius:14px;max-width:560px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-hdr{background:var(--side);padding:22px 24px 16px;text-align:center;flex-shrink:0}
+.modal-hdr h2{font-family:'Amiri',serif;font-size:20px;color:#c9a227;margin-bottom:4px}
+.modal-hdr p{font-size:11px;color:rgba(255,255,255,.45)}
+.modal-body{overflow-y:auto;padding:22px 24px;flex:1}
+.modal-body h3{font-family:'Amiri',serif;font-size:14px;color:var(--teal);margin:14px 0 6px}
+.modal-body h3:first-child{margin-top:0}
+.modal-body p{font-size:12.5px;color:var(--txt);line-height:1.8;margin-bottom:6px}
+.modal-body ul{padding-right:18px;margin-bottom:8px}
+.modal-body ul li{font-size:12.5px;color:var(--txt);line-height:1.8;margin-bottom:3px}
+.modal-foot{padding:16px 24px;border-top:1px solid var(--parch-d);background:var(--parch);flex-shrink:0;text-align:center}
+.modal-foot p{font-size:11.5px;color:var(--muted);margin-bottom:10px}
+.btn-agree{padding:11px 40px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-agree:hover{background:var(--teal-m);transform:translateY(-1px)}
+/* Footer */
+.footer{text-align:center;padding:25px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);margin-top:40px;background:var(--gold-bg);border-radius:12px 12px 0 0}
+.footer p{margin-bottom:6px}
+/* ── Mobile nav drawer ── */
+.mob-bar{display:none;position:fixed;top:0;right:0;left:0;z-index:500;background:var(--side);padding:10px 14px;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,162,39,.2)}
+.mob-title{font-family:'Amiri',serif;font-size:14px;color:#c9a227}
+.mob-menu-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:6px 11px;border-radius:7px;font-size:13px;cursor:pointer}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600}
+.drawer{position:fixed;top:0;right:0;width:78vw;max-width:280px;height:100vh;background:var(--side);z-index:700;transform:translateX(100%);transition:transform .3s;overflow-y:auto;display:flex;flex-direction:column}
+.drawer.open{transform:translateX(0)}
+.drawer-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;padding:14px 16px;text-align:left}
+@media(max-width:700px){
+  .app{grid-template-columns:1fr}
+  .side{display:none}
+  .mob-bar{display:flex}
+  .main{padding:60px 14px 14px}
+  .g2,.g3{grid-template-columns:1fr}
+  input[type=text],input[type=number],textarea,select{font-size:16px!important}
+  .nav-btns{gap:7px}
+  .btn-next,.btn-prev,.btn-skip,.btn-word,.btn-txt{font-size:12px;padding:9px 14px}
+  .sec-title{font-size:20px}
+  .modal-box{margin:8px;max-height:95vh}
+  .modal-hdr{padding:16px 16px 12px}
+  .modal-body{padding:14px 16px}
+  .modal-foot{padding:12px 16px}
+  .btn-agree{width:100%;padding:13px}
+  .card{padding:14px}
+}
+</style>
+</head>
+<body>
+<!-- ══ شريط الهاتف ══ -->
+<div class="mob-bar" id="mobBar">
+  <div class="mob-title">محرّر التصور البحثي</div>
+  <div style="display:flex;gap:7px">
+    <button class="mob-menu-btn" onclick="saveAll()" title="حفظ">💾</button>
+    <button class="mob-menu-btn" onclick="openDrawer()">☰ القائمة</button>
+  </div>
+</div>
+<div class="drawer-overlay" id="drawerOvl" onclick="closeDrawer()"></div>
+<div class="drawer" id="navDrawer">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(201,162,39,.2)">
+    <span style="font-family:'Amiri',serif;font-size:14px;color:#c9a227">خطوات التصور</span>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <ul class="nav" id="drawerNav" style="padding:6px 0"></ul>
+</div>
+
+<!-- ══ اتفاقية الاستخدام ══ -->
+<div id="tosModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h2>اتفاقية الاستخدام</h2>
+      <p>يرجى قراءة الشروط التالية قبل استخدام التطبيق</p>
+    </div>
+    <div class="modal-body">
+      <h3>1. طبيعة التطبيق</h3>
+      <p>هذا التطبيق هو <strong>اجتهاد شخصي وأداة تعليمية مساعدة</strong> مخصصة لمساعدة طلبة الدراسات الأدبية على بناء تصوراتهم البحثية الأولية. لا يمثّل وثيقةً رسمية صادرة عن أي جهة إدارية أو أكاديمية.</p>
+
+      <h3>2. حدود المسؤولية</h3>
+      <ul>
+        <li>لا يتحمل المطوّر أي مسؤولية عن الاستخدام غير الأمثل للتطبيق أو عن أي قرار أكاديمي مبني على مخرجاته.</li>
+        <li>يتحمل الطالب المسؤولية الكاملة عن مضامين التصور البحثي الذي يُعدّه، ويبقى ملزمًا بالعودة إلى المشرف الأكاديمي والأدلة المنهجية المعتمدة.</li>
+        <li>لا يُعفي استخدام هذه الأداة من احترام قواعد النزاهة العلمية وتجنب الانتحال الأدبي.</li>
+      </ul>
+
+      <h3>3. الخصوصية وحماية البيانات</h3>
+      <p>جميع البيانات المُدخَلة <strong>تُحفَظ محلياً</strong> في متصفح المستخدم فقط عبر تقنية <em>localStorage</em>، ولا يتم إرسال أي معلومة إلى أي خادم خارجي. المطوّر لا يملك ولا يعالج ولا يطّلع على أي بيانات شخصية للمستخدمين.</p>
+
+      <h3>4. الملكية الفكرية</h3>
+      <p>هذه الأداة مطوَّرة للاستخدام التعليمي غير التجاري. يُمنع إعادة توزيعها أو تعديلها أو الادعاء بملكيتها دون إذن صريح من المطوّر.</p>
+
+      <h3>5. قبول الشروط</h3>
+      <p>بالضغط على "أوافق وأبدأ"، تُقرّ بأنك قرأت هذه الاتفاقية وفهمتها وقبلتها كاملةً.</p>
+    </div>
+    <div class="modal-foot">
+      <p>فكرة: الأستاذ ع.بن دحمان / تصميم: Claude.ai — إصدار تجريبي 2026</p>
+      <button class="btn-agree" onclick="acceptTOS()">أوافق وأبدأ ←</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+<div class="side">
+  <div class="side-hdr">
+    <div class="side-title">محرّر التصور البحثي</div>
+    <div class="side-sub">الدراسات الأدبية الجزائرية</div>
+  </div>
+  <div class="side-tools">
+    <button class="tool-btn save-btn" onclick="saveAll()">💾 حفظ</button>
+    <button class="tool-btn reset-btn" onclick="resetAll()">🗑 مسح</button>
+  </div>
+  <div style="padding:7px 14px 0">
+    <button class="tool-btn" style="width:100%;border-color:rgba(201,162,39,.3);color:rgba(255,255,255,.55)" onclick="loadDemo()" title="تحميل مثال تجريبي جاهز">📋 مثال تجريبي</button>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-lbl"><span id="plbl">1 / 13</span><span id="ppct">0%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+  </div>
+  <ul class="nav" id="navEl"></ul>
+</div>
+<div class="main">
+  <div id="mainEl"></div>
+  <footer class="footer">
+    <p><strong>تنويه:</strong> هذا التطبيق "اجتهاد شخصي" مخصص للأغراض التعليمية والتدريبية فقط لمساعدة الطلبة على بناء تصوراتهم الأولية.</p>
+    <p>لا يعتبر وثيقة رسمية صادرة عن جهة إدارية، واستخدامه يتم على المسؤولية الشخصية للباحث مع ضرورة العودة للأدلة المنهجية المعتمدة.</p>
+    <p><em>بياناتكم محفوظة محلياً في متصفحكم الخاص ولا يتم إرسالها لأي خادم خارجي.</em></p>
+    <p style="margin-top:10px; color:var(--gold);">فكرة: الأستاذ ع.بن دحمان / تصميم: Claude.ai (إصدار تجريبي 2026)</p>
+  </footer>
+
+</div>
+</div>
+<script>
+/* ══════════════════════════════════════════════════════
+   DATA MODEL
+══════════════════════════════════════════════════════ */
+const STEPS=[
+  {id:'cover',   lbl:'صفحة الغلاف',        grp:'الهوية'},
+  {id:'title',   lbl:'العنوان والمتن',       grp:'الهوية'},
+  {id:'reasons', lbl:'أسباب اختيار الموضوع',grp:'التأطير'},
+  {id:'problem', lbl:'الإشكالية والفرضيات', grp:'التأطير'},
+  {id:'method',  lbl:'الجهاز المنهجي',       grp:'التأطير'},
+  {id:'plan',    lbl:'خطة البحث الأولية',    grp:'البناء'},
+  {id:'prevlit', lbl:'الدراسات السابقة',     grp:'البناء'},
+  {id:'sources', lbl:'المصادر والمراجع',     grp:'البناء'},
+  {id:'results', lbl:'النتائج المتوقعة',     grp:'البناء'},
+  {id:'timeline',lbl:'الجدول الزمني',        grp:'البناء', opt:true},
+  {id:'summary', lbl:'المراجعة والتصدير',    grp:'التصدير'},
+  {id:'format',  lbl:'إعدادات التنسيق',       grp:'التصدير'},
+  {id:'toc',     lbl:'فهرس التصور',          grp:'التصدير'},
+];
+
+function blank(){
+  return{
+    cover:{univ:'',fac:'',dept:'',branch:'',specialty:'',s1:'',s2:'',sup:'',degree:'',year:''},
+    title:{text:'',scope:'',corpus:'',corpusType:'',keywords:[]},
+    reasons:{subj:'',obj:''},
+    problem:{main:'',subs:[],hyps:[]},
+    method:{chosen:'',justify:'',tools:''},
+    plan:{intro:'',chs:[{title:'الفصل الأول: الإطار النظري',secs:['']},{title:'الفصل الثاني: الدراسة التطبيقية',secs:['']}],conc:''},
+    prevlit:{items:[],added:''},
+    sources:{primary:[],secondary:[]},
+    results:{items:[]},
+    timeline:{rows:[]},
+    fmt:{
+      bodyFont:'Traditional Arabic',
+      headFont:'Traditional Arabic',
+      bodySize:'14',
+      h1Size:'20', h2Size:'16', h3Size:'14',
+      lineHeight:'1.85',
+      marginCm:'2.5',
+      paraSpace:'8',
+      align:'justify',
+      coverCenter:true,
+      h1Color:'#0d4f4a',
+      h2Color:'#8B6914',
+      h3Color:'#0d4f4a',
+      bodyColor:'#1a1612'
+    }
+  };
+}
+
+let D=blank(), cur=0;
+
+/* ── Load saved ── */
+try{const s=localStorage.getItem('ARProposal4');if(s)D=Object.assign(blank(),JSON.parse(s));}catch(e){}
+
+/* ══════════════════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const gv=id=>{const e=$(id);return e?e.value:'';}
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function toast(msg,type='ok'){
+  const t=document.createElement('div');
+  t.className='toast '+type;t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2400);
+}
+
+function saveAll(){
+  save();
+  try{localStorage.setItem('ARProposal4',JSON.stringify(D));toast('تم الحفظ ✓');}
+  catch(e){toast('تعذّر الحفظ','err');}
+}
+
+function resetAll(){
+  if(!confirm('مسح جميع البيانات؟ لا يمكن التراجع.'))return;
+  localStorage.removeItem('ARProposal4');
+  D=blank();cur=0;buildNav();render();
+  toast('تم المسح');
+}
+
+function navBtns(hasPrev=true,isLast=false,isSkippable=false){
+  let h='<div class="nav-btns">';
+  if(!isLast) h+='<button class="btn-next" onclick="go(1)">التالي ←</button>';
+  if(isLast)  h+='<button class="btn-word" onclick="exportWord()">📄 تصدير Word</button><button class="btn-txt" onclick="exportTxt()">📋 تصدير نصي</button>';
+  if(isSkippable) h+='<button class="btn-skip" onclick="go(1)">تخطّي هذه الخطوة ←</button>';
+  if(hasPrev) h+='<button class="btn-prev" onclick="go(-1)">→ السابق</button>';
+  return h+'</div>';
+}
+
+function hdr(n,title,desc){
+  return`<div class="sec-hdr"><div class="sec-badge">${n}</div>
+  <h1 class="sec-title">${title}</h1>
+  <p class="sec-desc">${desc}</p></div><div class="divider"></div>`;
+}
+
+function go(dir){save();cur=Math.max(0,Math.min(STEPS.length-1,cur+dir));buildNav();render();window.scrollTo(0,0);}
+function goTo(i){save();cur=i;buildNav();render();window.scrollTo(0,0);}
+
+/* ══════════════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════════════ */
+function buildNav(){
+  const el=$('navEl');
+  let html='',lastGrp='';
+  STEPS.forEach((s,i)=>{
+    if(s.grp!==lastGrp){
+      if(lastGrp) html+='<div class="nav-sep"></div>';
+      html+=`<div class="nav-group-lbl">${s.grp}</div>`;
+      lastGrp=s.grp;
+    }
+    html+=`<li class="nav-item${i===cur?' active':''}${s.opt?' opt':''}" onclick="goTo(${i})">
+      <span class="n-num">${i+1}</span><span>${s.lbl}</span></li>`;
+  });
+  el.innerHTML=html;
+  const pct=Math.round(cur/(STEPS.length-1)*100);
+  $('pfill').style.width=pct+'%';
+  $('plbl').textContent=`${cur+1} / ${STEPS.length}`;
+  $('ppct').textContent=pct+'%';
+}
+
+/* ══════════════════════════════════════════════════════
+   RENDER DISPATCHER
+══════════════════════════════════════════════════════ */
+function render(){
+  const id=STEPS[cur].id;
+  const fns={cover:rCover,title:rTitle,reasons:rReasons,problem:rProblem,
+    method:rMethod,plan:rPlan,prevlit:rPrevlit,sources:rSources,
+    results:rResults,timeline:rTimeline,summary:rSummary,format:rFormat,toc:rTOC};
+  $('mainEl').innerHTML=(fns[id]||rCover)();
+  postRender(id);
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 1 — صفحة الغلاف
+══════════════════════════════════════════════════════ */
+function rCover(){
+  const d=D.cover;
+  const prev=`<div class="cover-prev">
+    <div class="cpv-row" style="font-weight:600"><em>الجامعة: </em>${d.univ||'—'}</div>
+    <div class="cpv-row"><em>الكلية: </em>${d.fac||'—'}</div>
+    <div class="cpv-row"><em>القسم: </em>${d.dept||'—'}</div>
+    <div style="height:12px"></div>
+    <div class="cpv-title">عنوان تصور البحث<br><span style="font-size:13px;font-weight:400;color:var(--teal)">${D.title.text||'يُحدَّد في الخطوة التالية'}</span></div>
+    ${(d.branch||d.specialty)?`<div style="height:6px"></div>
+    ${d.branch?`<div class="cpv-row"><em>الفرع: </em>${d.branch}</div>`:''}
+    ${d.specialty?`<div class="cpv-row"><em>التخصص: </em>${d.specialty}</div>`:''}`:'' }
+    <div style="height:10px"></div>
+    <div class="cpv-row" style="font-weight:600">إعداد الطالب(ة):</div>
+    <div class="cpv-row" style="padding-right:12px">• ${d.s1||'—'}</div>
+    ${d.s2?`<div class="cpv-row" style="padding-right:12px">• ${d.s2}</div>`:''}
+    <div style="height:8px"></div>
+    <div class="cpv-row"><em>تحت إشراف: </em>${d.sup||'—'}</div>
+    <div class="cpv-row"><em>السنة الجامعية: </em>${d.year||'—'}</div>
+  </div>`;
+  return hdr('1','صفحة الغلاف','بيانات المؤسسة والطالب والمشرف.')+
+  `<div class="card"><div class="card-title">بيانات المؤسسة</div>
+  <div class="g3">
+    <div><label>الجامعة</label><input type="text" id="cv_u" value="${esc(d.univ)}" placeholder="جامعة الجزائر 2"></div>
+    <div><label>الكلية</label><input type="text" id="cv_f" value="${esc(d.fac)}" placeholder="كلية الآداب واللغات"></div>
+    <div><label>القسم</label><input type="text" id="cv_d" value="${esc(d.dept)}" placeholder="قسم اللغة العربية وآدابها"></div>
+    <div><label>الفرع <span class="opt-label">(اختياري)</span></label><input type="text" id="cv_br" value="${esc(d.branch)}" placeholder="مثال: أدب عربي، لسانيات..."></div>
+    <div><label>التخصص <span class="opt-label">(اختياري)</span></label><input type="text" id="cv_sp" value="${esc(d.specialty)}" placeholder="مثال: نقد أدبي معاصر..."></div>
+    <div></div>
+  </div></div>
+  <div class="card"><div class="card-title">بيانات الطالب والإشراف</div>
+  <div class="g2">
+    <div><label>الطالب 1 (إعداد)</label><input type="text" id="cv_s1" value="${esc(d.s1)}" placeholder="الاسم الكامل"></div>
+    <div><label>الطالب 2 <span class="opt-label">(اختياري — للبحوث الثنائية)</span></label><input type="text" id="cv_s2" value="${esc(d.s2)}" placeholder="اختياري"></div>
+    <div><label>المشرف</label><input type="text" id="cv_sup" value="${esc(d.sup)}" placeholder="الأستاذ الدكتور ..."></div>
+    <div><label>الطور الدراسي</label><select id="cv_deg">
+      <option value="">-- اختر --</option>
+      ${['ليسانس','ماجستير — السنة الأولى','ماجستير — السنة الثانية','دكتوراه — السنة الأولى','دكتوراه — السنة الثانية','دكتوراه — السنة الثالثة'].map(v=>`<option ${d.degree===v?'selected':''}>${v}</option>`).join('')}
+    </select></div>
+    <div style="grid-column:1/-1"><label>السنة الجامعية</label><input type="text" id="cv_y" value="${esc(d.year)}" placeholder="2024 / 2025"></div>
+  </div></div>
+  <div class="card" style="background:var(--parch)"><div class="card-title">معاينة الغلاف</div>${prev}</div>`
+  +navBtns(false);
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 2 — العنوان والمتن
+══════════════════════════════════════════════════════ */
+function rTitle(){
+  const d=D.title;
+  const wc=d.text.trim().split(/\s+/).filter(Boolean).length;
+  const wcEl=wc>0?(wc<=15?`<div class="wc ok">✓ ${wc} كلمة</div>`:`<div class="wc warn">⚠ ${wc} كلمة — يُفضَّل أقل من 15</div>`):'';
+  return hdr('2','العنوان والمتن','العنوان يجب أن يكون جامعًا مانعًا مع تحديد المجال والمتن الأدبي بدقة.')+
+  `<div class="info-box"><strong>نموذج جيد:</strong> "تلقي الرواية الجزائرية المعاصرة في النقد الجامعي 2010–2020" — يحدد النوع الأدبي، الموقع، الحقبة الزمنية.</div>
+  <div class="card"><div class="card-title">صياغة العنوان</div>
+  <label>العنوان الكامل</label>
+  <textarea id="t_txt" rows="3" placeholder="مثال: البنية السردية في رواية 'الزلزال' لطاهر وطار — دراسة بنيوية">${esc(d.text)}</textarea>${wcEl}
+  <div class="g2" style="margin-top:12px">
+    <div><label>الحقبة الزمنية <span class="opt-label">(اختياري)</span></label><input type="text" id="t_scope" value="${esc(d.scope)}" placeholder="مثال: 1990–2020، العصر الحديث..."></div>
+    <div><label>الكلمات المفتاحية <span class="opt-label">(اختيارية)</span></label>
+      <div class="tag-wrap"><input type="text" id="kw_in" placeholder="أضف كلمة..."><button class="btn-tag" onclick="addKw()">+</button></div>
+      <div class="tags" id="kw_tags">${d.keywords.map((k,i)=>`<span class="tag">${esc(k)}<button onclick="rmKw(${i})">×</button></span>`).join('')}</div>
+    </div>
+  </div></div>
+  <div class="card"><div class="card-title">تحديد المتن (Corpus)</div>
+  <div class="tip"><strong>أهمية المتن:</strong> في الدراسات الأدبية يجب تحديد "المدونة" بدقة قبل الشروع في البحث — رواية بعينها، ديوان شعري، مجموعة نصوص نقدية، أو مجموعة قصصية محددة.</div>
+  <div class="g2">
+    <div><label>نوع المتن</label><select id="t_ctype">
+      <option value="">-- اختر --</option>
+      ${['رواية','ديوان شعري','قصص قصيرة','نصوص نقدية','مسرحية','مقالات أدبية','مخطوطات','أخرى'].map(v=>`<option ${d.corpusType===v?'selected':''}>${v}</option>`).join('')}
+    </select></div>
+    <div><label>وصف المتن بدقة</label><input type="text" id="t_corpus" value="${esc(d.corpus)}" placeholder="مثال: رواية 'الزلزال' لطاهر وطار، دار الآداب 1974"></div>
+  </div></div>`+navBtns();
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 3 — أسباب اختيار الموضوع
+══════════════════════════════════════════════════════ */
+function rReasons(){
+  const d=D.reasons;
+  return hdr('3','أسباب اختيار الموضوع','يُميّز التصور الأكاديمي الجزائري بين نوعين من الأسباب.')+
+  `<div class="info-box">يُعدّ التصريح بأسباب الاختيار دليلًا على وعي الباحث بموقعه من الموضوع، ويُثبت أن اختياره مدروس وليس عشوائيًا.</div>
+  <div class="card"><div class="card-title">الأسباب الذاتية</div>
+  <div class="tip"><strong>ماذا تشمل؟</strong> ميول الطالب الشخصية، اهتمامه بالكاتب أو الجنس الأدبي أو المنهج النقدي، علاقته بالموضوع من حيث القراءات والدراسة السابقة.</div>
+  <textarea id="rs_subj" rows="4" placeholder="مثال: انبثق اهتمامي بهذا الموضوع من قراءتي المبكرة لأعمال الكاتب، وإعجابي بأسلوبه السردي الذي يمزج بين الواقعي والرمزي...">${esc(d.subj)}</textarea></div>
+  <div class="card"><div class="card-title">الأسباب الموضوعية</div>
+  <div class="tip"><strong>ماذا تشمل؟</strong> شُح الدراسات حول الموضوع، وجود فجوة معرفية، رغبة في تطبيق منهج نقدي جديد على نص لم يُدرَس وفق هذا المنهج، الأهمية الأدبية والثقافية للنص.</div>
+  <textarea id="rs_obj" rows="4" placeholder="مثال: تكمن الأهمية الموضوعية في ندرة الدراسات التي تناولت هذا النص وفق المنهج السيميائي، وهو ما يجعل هذا البحث إضافة جديدة في المكتبة النقدية الجزائرية...">${esc(d.obj)}</textarea></div>`+navBtns();
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 4 — الإشكالية والفرضيات
+══════════════════════════════════════════════════════ */
+function rProblem(){
+  const d=D.problem;
+  const subs=d.subs.length?d.subs:[''];
+  const hyps=d.hyps.length?d.hyps:[''];
+  return hdr('4','الإشكالية والفرضيات','جوهر التصور الأكاديمي الجزائري — تُقيَّم بعناية من طرف المشرفين.')+
+  `<div class="tip"><strong>معيار الإشكالية الجيدة:</strong> سؤال جوهري يتضمن مفارقة أو فجوة معرفية. في الأدب تركّز على "كيفية اشتغال النص" أو "العلاقة بين النص والواقع" أو "آلية إنتاج الدلالة".</div>
+  <div class="card"><div class="card-title">الإشكالية المحورية</div>
+  <textarea id="pr_main" rows="4" placeholder="مثال: كيف وظّف طاهر وطار البنية السردية أداةً لنقل الرؤية الإيديولوجية في رواية 'الزلزال'؟ وما العلاقة بين اختياراته الجمالية ومرحلة التحولات السياسية؟">${esc(d.main)}</textarea></div>
+  <div class="card"><div class="card-title">الأسئلة الفرعية</div>
+  <div class="info-box">تفتيت الإشكالية الكبرى إلى 3–4 أسئلة تفصيلية تُشكّل هيكل فصول البحث.</div>
+  <div id="subs_l">${subs.map((s,i)=>`<div class="li"><input type="text" id="sub_${i}" value="${esc(s)}" placeholder="السؤال الفرعي ${i+1}"><button class="btn-rm" onclick="rmSub(${i})">−</button></div>`).join('')}</div>
+  <button class="btn-add" onclick="addSub()">+ أضف سؤالًا فرعيًا</button></div>
+  <div class="card"><div class="card-title">الفرضيات</div>
+  <div class="info-box">إجابات مؤقتة وذكية يتعهد الطالب بالتحقق منها خلال فصول البحث. يجب أن تكون قابلة للإثبات أو النفي.</div>
+  <div id="hyps_l">${hyps.map((h,i)=>`<div class="li"><textarea id="hyp_${i}" rows="2" placeholder="الفرضية ${i+1}: يُفترض أن...">${esc(h)}</textarea><button class="btn-rm" onclick="rmHyp(${i})">−</button></div>`).join('')}</div>
+  <button class="btn-add" onclick="addHyp()">+ أضف فرضية</button></div>`+navBtns();
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 5 — الجهاز المنهجي
+══════════════════════════════════════════════════════ */
+const METHODS_INFO=[
+  {n:'المنهج السيميائي',     d:'تحليل العلامات والدلالات ورصد أنظمة الدلالة داخل النص'},
+  {n:'المنهج البنيوي',       d:'دراسة العلاقات الداخلية للنص وبنيته السطحية والعميقة'},
+  {n:'المنهج الأسلوبي',     d:'دراسة اللغة في سياق الخطاب الأدبي وأثرها الجمالي'},
+  {n:'المنهج التداولي',      d:'تحليل الخطاب الأدبي في سياق التواصل وقصديّة المؤلف'},
+  {n:'المنهج التاريخي',      d:'ربط النص بظروفه التاريخية والسياسية والفكرية'},
+  {n:'المنهج الاجتماعي',    d:'دراسة علاقة النص بالواقع والبنيات الاجتماعية'},
+  {n:'المنهج النفسي',        d:'تحليل الأبعاد النفسية في شخصيات النص أو لدى المؤلف'},
+  {n:'المنهج المقارن',       d:'المقارنة بين نصوص أو مؤلفين أو تيارات أدبية مختلفة'},
+  {n:'منهج تحليل الخطاب',   d:'تفكيك البنى الخطابية والأيديولوجية في النص'},
+  {n:'المنهج السردي',        d:'دراسة تقنيات السرد والزمن والراوي والفضاء'},
+];
+
+function rMethod(){
+  const d=D.method;
+  return hdr('5','الجهاز المنهجي','تحديد المنهج النقدي المعتمد في الجامعات الجزائرية حاليًا.')+
+  `<div class="card"><div class="card-title">اختر المنهج (انقر لإضافته)</div>
+  <div class="chips">${METHODS_INFO.map(m=>`<button class="chip" title="${m.d}" onclick="appendField('meth_txt','${m.n}')"><strong>${m.n}</strong></button>`).join('')}</div>
+  <label>المنهج أو المناهج المعتمدة</label>
+  <textarea id="meth_txt" rows="3" placeholder="انقر على المقترحات أعلاه أو اكتب مباشرة...">${esc(d.chosen)}</textarea></div>
+  <div class="card"><div class="card-title">مبررات اختيار المنهج</div>
+  <textarea id="meth_j" rows="4" placeholder="لماذا هذا المنهج تحديدًا؟ ما مدى انسجامه مع طبيعة المتن والإشكالية؟ هل سبق تطبيقه على هذا النص؟">${esc(d.justify)}</textarea></div>
+  <div class="card"><div class="card-title">الأدوات الإجرائية <span class="opt-label">(اختياري)</span></div>
+  <textarea id="meth_t" rows="3" placeholder="المفاهيم الإجرائية التي سيستعين بها البحث: مثلاً في المنهج السيميائي — العلامة، الأيقون، الرمز، المحور الاستبدالي...">${esc(d.tools)}</textarea></div>`+navBtns();
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 6 — خطة البحث
+══════════════════════════════════════════════════════ */
+function rPlan(){
+  const d=D.plan;
+  const chs=d.chs.length?d.chs:[{title:'الفصل الأول: الإطار النظري',secs:['']}];
+  return hdr('6','خطة البحث الأولية','البنية الكلاسيكية: مقدمة ← فصول ← خاتمة.')+
+  `<div class="tip"><strong>التقسيم المعتمد في الجامعة الجزائرية:</strong> فصل نظري (ضبط المفاهيم) + فصل أو فصلان تطبيقيان (تحليل المتن) + خاتمة (توقع النتائج).</div>
+  <div class="card"><div class="card-title">المقدمة</div>
+  <textarea id="pl_intro" rows="3" placeholder="ما الذي ستتضمنه المقدمة؟ (الإطار العام، مبررات الاختيار، الإشكالية، المنهج، تقسيمات البحث، الصعوبات...)">${esc(d.intro)}</textarea></div>
+  <div id="chs_tree">${chs.map((c,ci)=>chBlock(c,ci)).join('')}</div>
+  <button class="btn-add" style="margin-bottom:14px" onclick="addCh()">+ أضف فصلًا</button>
+  <div class="card"><div class="card-title">الخاتمة</div>
+  <textarea id="pl_conc" rows="3" placeholder="ما الذي ستتضمنه الخاتمة؟ (النتائج المتوقعة، التوصيات، الآفاق المستقبلية للبحث...)">${esc(d.conc)}</textarea></div>`+navBtns();
+}
+
+function chBlock(c,ci){
+  const secs=c.secs.length?c.secs:[''];
+  return`<div class="ch-block" id="ch_${ci}">
+  <div class="ch-hdr">
+    <span class="ch-badge">ف${ci+1}</span>
+    <input type="text" id="ch_t_${ci}" value="${esc(c.title)}" placeholder="عنوان الفصل">
+    <button class="btn-ch-rm" onclick="rmCh(${ci})">حذف</button>
+  </div>
+  <div class="ch-secs">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">المباحث والمحاور</div>
+    <div id="secs_${ci}">${secs.map((s,si)=>secRow(s,ci,si)).join('')}</div>
+    <button class="btn-sec-add" onclick="addSec(${ci})">+ مبحث</button>
+  </div></div>`;
+}
+
+function secRow(s,ci,si){
+  return`<div class="sec-row" id="sr_${ci}_${si}">
+  <div class="sec-dot"></div>
+  <input type="text" id="sec_${ci}_${si}" value="${esc(s)}" placeholder="المبحث ${si+1}">
+  <button class="btn-sec-rm" onclick="rmSec(${ci},${si})">−</button>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 7 — الدراسات السابقة
+══════════════════════════════════════════════════════ */
+function rPrevlit(){
+  const d=D.prevlit;
+  const items=d.items.length?d.items:[{auth:'',year:'',title:'',link:'',added:''}];
+  return hdr('7','الدراسات السابقة','جرد الأعمال السابقة مع إبراز الجديد الذي يُضيفه بحثك.')+
+  `<div class="info-box"><strong>الهدف المزدوج:</strong> (1) إثبات اطّلاعك على الإنتاج السابق — (2) تبيان الفجوة التي يسدّها بحثك لتجنّب التكرار.</div>
+  <div id="pl_list">${items.map((it,i)=>prevItem(it,i)).join('')}</div>
+  <button class="btn-add" onclick="addPL()">+ أضف دراسة سابقة</button>
+  <div class="card" style="margin-top:14px"><div class="card-title">الجديد الذي يُضيفه هذا البحث</div>
+  <textarea id="pl_added" rows="4" placeholder="بعد استعراض الدراسات السابقة، ما الذي سيُقدّمه بحثك جديدًا؟ (منهج جديد، زاوية نظر مختلفة، نص لم يُدرَس كافيًا...)">${esc(d.added)}</textarea></div>`+navBtns();
+}
+
+function prevItem(it,i){
+  return`<div class="card" id="pl_c_${i}">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <span style="font-size:12px;color:var(--muted);font-weight:500">الدراسة ${i+1}</span>
+    <button style="padding:3px 8px;border:1px solid #f0d0c8;border-radius:5px;background:#fff;color:#c0503a;cursor:pointer;font-size:11.5px" onclick="rmPL(${i})">حذف</button>
+  </div>
+  <div class="g2">
+    <div><label>المؤلف</label><input type="text" id="pl_a_${i}" value="${esc(it.auth)}" placeholder="الاسم الكامل"></div>
+    <div><label>السنة</label><input type="text" id="pl_y_${i}" value="${esc(it.year)}" placeholder="2018"></div>
+  </div>
+  <div style="margin-top:9px"><label>العنوان الكامل</label><input type="text" id="pl_t_${i}" value="${esc(it.title)}" placeholder="عنوان البحث أو الكتاب أو المذكرة"></div>
+  <div style="margin-top:9px"><label>الصلة بموضوعك وما يُميّز بحثك عنها</label><textarea id="pl_l_${i}" rows="2" placeholder="كيف يتقاطع مع موضوعك؟ وما نقطة الاختلاف أو التجاوز؟">${esc(it.link)}</textarea></div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 8 — المصادر والمراجع
+══════════════════════════════════════════════════════ */
+function rSources(){
+  const d=D.sources;
+  const prim=d.primary.length?d.primary:[{text:''}];
+  const sec=d.secondary.length?d.secondary:[{text:''}];
+  return hdr('8','المصادر والمراجع','تصنيف أولي بين النصوص الأدبية والكتب النقدية والنظرية.')+
+  `<div class="info-box"><strong>التمييز الجوهري:</strong> المصادر = النصوص الأدبية التي ستُحلَّل (المتن) | المراجع = الكتب النقدية والنظرية التي ستستند إليها في القراءة والتأطير.</div>
+  <div class="card"><div class="card-title">المصادر الأولية (النصوص الأدبية)</div>
+  <div id="prim_l">${prim.map((r,i)=>`<div class="li"><input type="text" id="prim_${i}" value="${esc(r.text)}" placeholder="مثال: وطار، طاهر. الزلزال. الجزائر: الشركة الوطنية للنشر والتوزيع، 1974."><button class="btn-rm" onclick="rmPrim(${i})">−</button></div>`).join('')}</div>
+  <button class="btn-add" onclick="addPrim()">+ أضف مصدرًا أوليًا</button></div>
+  <div class="card"><div class="card-title">المراجع النقدية والنظرية</div>
+  <div id="sec_l">${sec.map((r,i)=>`<div class="li"><input type="text" id="sec_${i}" value="${esc(r.text)}" placeholder="مثال: بارت، رولان. لذة النص. ترجمة فؤاد صفا. بيروت: دار توبقال، 1988."><button class="btn-rm" onclick="rmSec2(${i})">−</button></div>`).join('')}</div>
+  <button class="btn-add" onclick="addSec2()">+ أضف مرجعًا نقديًا</button></div>`+navBtns();
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 9 — النتائج المتوقعة
+══════════════════════════════════════════════════════ */
+function rResults(){
+  const d=D.results;
+  const items=d.items.length?d.items:[''];
+  return hdr('9','النتائج المتوقعة','ما الذي تتوقع أن يُقدّمه بحثك؟ استنادًا إلى فرضياتك وخطتك.')+
+  `<div class="info-box">النتائج المتوقعة ليست "يقينًا" بل "رهانًا بحثيًا" — تُظهر للمشرف وضوح رؤيتك وقدرتك على توقّع مسار البحث.</div>
+  <div class="card"><div class="card-title">النتائج المتوقعة</div>
+  <div id="res_l">${items.map((r,i)=>`<div class="li"><input type="text" id="res_${i}" value="${esc(r)}" placeholder="النتيجة ${i+1}..."><button class="btn-rm" onclick="rmRes(${i})">−</button></div>`).join('')}</div>
+  <button class="btn-add" onclick="addRes()">+ أضف نتيجة</button></div>`+navBtns();
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 10 — الجدول الزمني (اختياري)
+══════════════════════════════════════════════════════ */
+function rTimeline(){
+  const d=D.timeline;
+  const rows=d.rows.length?d.rows:[{task:'',dur:'',unit:'أشهر'}];
+  return hdr('10','الجدول الزمني <span style="font-size:14px;font-weight:400;color:var(--muted)">(اختياري)</span>','توزيع مراحل العمل على الزمن المتاح.')+
+  `<div class="card"><div class="card-title">مراحل البحث</div>
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin-bottom:7px;padding:0 2px">
+    <span style="font-size:11.5px;color:var(--muted);font-weight:500">المرحلة</span>
+    <span style="font-size:11.5px;color:var(--muted);font-weight:500">المدة</span>
+    <span style="font-size:11.5px;color:var(--muted);font-weight:500">الوحدة</span>
+  </div>
+  <div id="tl_l">${rows.map((r,i)=>`<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin-bottom:8px">
+    <input type="text" id="tl_t_${i}" value="${esc(r.task)}" placeholder="المرحلة ${i+1}">
+    <input type="number" id="tl_d_${i}" value="${r.dur}" placeholder="3" min="1">
+    <select id="tl_u_${i}">${['أيام','أسابيع','أشهر'].map(u=>`<option ${r.unit===u||(!r.unit&&u==='أشهر')?'selected':''}>${u}</option>`).join('')}</select>
+  </div>`).join('')}</div>
+  <button class="btn-add" onclick="addTL()">+ أضف مرحلة</button></div>
+  <div style="margin-top:12px;padding:9px 13px;background:var(--gold-bg);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px">
+    <span style="font-size:12px;color:var(--muted)">هذه الخطوة اختيارية</span>
+    <button class="btn-skip" onclick="go(1)">تخطّي ←</button>
+  </div>`+navBtns();
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 11 — المراجعة والتصدير
+══════════════════════════════════════════════════════ */
+function rSummary(){
+  save();const d=D;
+  const S=(t,c)=>`<div class="sum-card"><h3>${t}</h3>${c}</div>`;
+  const F=(l,v)=>v?`<div class="sf"><div class="sl">${l}</div><div class="sv">${v}</div></div>`:'';
+  const tlHas=d.timeline.rows.filter(r=>r.task).length>0;
+  return`<div class="done-banner"><h2>✦ مراجعة التصور البحثي</h2><p>راجع قبل التصدير — يمكنك العودة لأي خطوة للتعديل</p></div>`+
+  S('الغلاف',F('الجامعة',d.cover.univ)+F('الكلية',d.cover.fac)+F('القسم',d.cover.dept)+(d.cover.branch?F('الفرع',d.cover.branch):'')+(d.cover.specialty?F('التخصص',d.cover.specialty):'')+F('الطالب 1',d.cover.s1)+(d.cover.s2?F('الطالب 2',d.cover.s2):'')+F('المشرف',d.cover.sup)+F('السنة الجامعية',d.cover.year))+
+  S('العنوان والمتن',F('العنوان',d.title.text)+F('الحقبة الزمنية',d.title.scope)+F('نوع المتن',d.title.corpusType)+F('المتن',d.title.corpus)+(d.title.keywords.length?F('الكلمات المفتاحية',d.title.keywords.join(' — ')):''))+
+  S('أسباب الاختيار',F('الأسباب الذاتية',d.reasons.subj)+F('الأسباب الموضوعية',d.reasons.obj))+
+  S('الإشكالية والفرضيات',F('الإشكالية المحورية',d.problem.main)+d.problem.subs.filter(Boolean).map((s,i)=>`<div class="sf"><div class="sl">السؤال الفرعي ${i+1}</div><div class="sv">${s}</div></div>`).join('')+d.problem.hyps.filter(Boolean).map((h,i)=>`<div class="sf"><div class="sl">الفرضية ${i+1}</div><div class="sv">${h}</div></div>`).join(''))+
+  S('الجهاز المنهجي',F('المنهج المعتمد',d.method.chosen)+F('المبررات',d.method.justify)+(d.method.tools?F('الأدوات الإجرائية',d.method.tools):''))+
+  S('خطة البحث',F('المقدمة',d.plan.intro)+d.plan.chs.map((c,i)=>`<div class="sf"><div class="sl" style="font-weight:600;color:var(--txt)">${c.title}</div>${c.secs.filter(Boolean).map(s=>`<div class="sv" style="padding-right:12px">• ${s}</div>`).join('')}</div>`).join('')+F('الخاتمة',d.plan.conc))+
+  S('الدراسات السابقة',d.prevlit.items.filter(it=>it.auth||it.title).map((it,i)=>`<div class="sf"><div class="sl">${i+1}. ${it.auth} (${it.year})</div><div class="sv">${it.title}</div></div>`).join('')+F('الجديد الذي يُضيفه البحث',d.prevlit.added))+
+  S('المصادر والمراجع',`<div class="sf"><div class="sl">المصادر الأولية</div>${d.sources.primary.filter(r=>r.text).map((r,i)=>`<div class="sv">${i+1}. ${r.text}</div>`).join('')}</div><div class="sf"><div class="sl">المراجع النقدية</div>${d.sources.secondary.filter(r=>r.text).map((r,i)=>`<div class="sv">${i+1}. ${r.text}</div>`).join('')}</div>`)+
+  S('النتائج المتوقعة',d.results.items.filter(Boolean).map((r,i)=>`<div class="sf"><div class="sv">${i+1}. ${r}</div></div>`).join(''))+
+  (tlHas?S('الجدول الزمني',`<table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr><th style="text-align:right;padding:4px 7px;background:var(--parch-d);border:1px solid var(--border)">المرحلة</th><th style="text-align:right;padding:4px 7px;background:var(--parch-d);border:1px solid var(--border)">المدة</th><th style="text-align:right;padding:4px 7px;background:var(--parch-d);border:1px solid var(--border)">الوحدة</th></tr>${d.timeline.rows.filter(r=>r.task).map(r=>`<tr><td style="padding:4px 7px;border:1px solid var(--border)">${r.task}</td><td style="padding:4px 7px;border:1px solid var(--border)">${r.dur}</td><td style="padding:4px 7px;border:1px solid var(--border)">${r.unit}</td></tr>`).join('')}</table>`):'')
+  +`<div class="nav-btns"><button class="btn-word" onclick="exportWord()">📄 تصدير Word</button><button class="btn-txt" onclick="exportTxt()">📋 تصدير نصي</button><button class="btn-next" onclick="go(1)">إعدادات التنسيق ←</button><button class="btn-prev" onclick="go(-1)">→ السابق</button></div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 12 — إعدادات تنسيق ملف Word
+══════════════════════════════════════════════════════ */
+const ARABIC_FONTS=['Traditional Arabic','Simplified Arabic','Arabic Typesetting','Amiri','Noto Naskh Arabic','Times New Roman','Arial','Calibri','Georgia','Tahoma'];
+const LATIN_FONTS=['Times New Roman','Arial','Calibri','Georgia','Tahoma','Garamond','Palatino'];
+
+function fontOpts(sel){
+  return [...ARABIC_FONTS,...LATIN_FONTS].map(f=>`<option ${sel===f?'selected':''}>${f}</option>`).join('');
+}
+
+function colorSwatch(id,val){
+  return`<div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+    <input type="color" id="${id}" value="${val}" style="width:36px;height:32px;border:1px solid var(--border);border-radius:6px;padding:2px;cursor:pointer;background:#fff">
+    <input type="text" id="${id}_hex" value="${val}" style="width:90px;font-size:12px" oninput="syncColor('${id}','${id}_hex')" placeholder="#000000">
+  </div>`;
+}
+
+function rFormat(){
+  const f=D.fmt;
+  const numInput=(id,val,min,max)=>
+    `<input type="number" id="${id}" value="${val}" min="${min}" max="${max}" style="width:80px">`;
+
+  return hdr('12','إعدادات التنسيق','تحكّم في مظهر ملف Word المُصدَّر — الخطوط، الأحجام، التباعد، الهوامش، الألوان.')+
+
+  `<div class="card"><div class="card-title">خط نص المتن</div>
+  <div class="g2">
+    <div><label>نوع الخط</label>
+    <select id="fmt_bf">${fontOpts(f.bodyFont)}</select></div>
+    <div><label>حجم الخط (نقطة)</label>${numInput('fmt_bs',f.bodySize,8,22)}</div>
+    <div><label>تباعد الأسطر</label>
+    <select id="fmt_lh">
+      ${['1.0','1.15','1.5','1.85','2.0','2.5'].map(v=>`<option ${f.lineHeight===v?'selected':''}>${v}</option>`).join('')}
+    </select></div>
+    <div><label>المسافة بين الفقرات (نقطة)</label>${numInput('fmt_ps',f.paraSpace,0,24)}</div>
+    <div><label>محاذاة النص</label>
+    <select id="fmt_al">
+      <option ${f.align==='justify'?'selected':''} value="justify">ضبط (Justify)</option>
+      <option ${f.align==='right'?'selected':''} value="right">يمين</option>
+      <option ${f.align==='center'?'selected':''} value="center">وسط</option>
+    </select></div>
+    <div><label>هامش الصفحة (سم)</label>
+    <select id="fmt_mg">
+      ${['1.5','2.0','2.5','3.0','3.5'].map(v=>`<option ${f.marginCm===v?'selected':''}>${v} سم</option>`).join('')}
+    </select></div>
+    <div><label>لون نص المتن</label>${colorSwatch('fmt_bc',f.bodyColor)}</div>
+    <div><label>توسيط غلاف التصور</label>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+      <input type="checkbox" id="fmt_cv" ${f.coverCenter?'checked':''} style="width:16px;height:16px;cursor:pointer;accent-color:var(--teal)">
+      <label for="fmt_cv" style="font-size:12.5px;color:var(--txt);margin:0;font-weight:400">توسيط محتوى صفحة الغلاف</label>
+    </div></div>
+  </div></div>
+
+  <div class="card"><div class="card-title">خطوط العناوين</div>
+  <div class="g2">
+    <div><label>نوع خط العناوين</label>
+    <select id="fmt_hf">${fontOpts(f.headFont)}</select></div>
+    <div></div>
+    <div><label>حجم العنوان الرئيسي H1 (نقطة)</label>${numInput('fmt_h1',f.h1Size,12,32)}</div>
+    <div><label>لون H1</label>${colorSwatch('fmt_h1c',f.h1Color)}</div>
+    <div><label>حجم العنوان الثانوي H2 (نقطة)</label>${numInput('fmt_h2',f.h2Size,11,26)}</div>
+    <div><label>لون H2</label>${colorSwatch('fmt_h2c',f.h2Color)}</div>
+    <div><label>حجم العنوان الفرعي H3 (نقطة)</label>${numInput('fmt_h3',f.h3Size,10,22)}</div>
+    <div><label>لون H3</label>${colorSwatch('fmt_h3c',f.h3Color)}</div>
+  </div></div>
+
+  <div class="card" style="background:var(--parch)"><div class="card-title">معاينة تقريبية</div>
+  <div id="fmt_preview" style="border:1px solid var(--border);border-radius:8px;background:#fff;padding:20px;direction:rtl">
+    ${fmtPreview(f)}
+  </div></div>`
+  +navBtns(true,false)+
+  `<div class="nav-btns" style="margin-top:0;padding-top:0;border:none">
+    <button class="btn-word" onclick="saveFmtAndExport()">📄 تصدير Word الآن</button>
+  </div>`;
+}
+
+function fmtPreview(f){
+  return`<div style="font-family:'${f.headFont}',serif;font-size:${f.h1Size}pt;color:${f.h1Color};border-bottom:2pt solid ${f.h2Color};padding-bottom:6px;margin-bottom:10px;text-align:${f.coverCenter?'center':'right'}">عنوان تصور البحث</div>
+  <div style="font-family:'${f.headFont}',serif;font-size:${f.h2Size}pt;color:${f.h2Color};border-bottom:1pt solid #c8b89a;margin-bottom:8px">أولًا: أسباب اختيار الموضوع</div>
+  <div style="font-family:'${f.headFont}',serif;font-size:${f.h3Size}pt;color:${f.h3Color};margin-bottom:6px">الأسباب الذاتية</div>
+  <p style="font-family:'${f.bodyFont}',serif;font-size:${f.bodySize}pt;color:${f.bodyColor};line-height:${f.lineHeight};text-align:${f.align};margin-bottom:${f.paraSpace}pt">نموذج لفقرة من متن التصور البحثي — يظهر هنا الخط والحجم والتباعد كما سيبدو في ملف Word المُصدَّر. يمكنك تعديل الإعدادات وستتحدث المعاينة فورًا.</p>`;
+}
+
+
+function rTOC(){
+  save();const d=D;
+  const tlHas=d.timeline.rows.filter(r=>r.task).length>0;
+  const sections=[
+    {n:1,label:'صفحة الغلاف'},
+    {n:2,label:'العنوان والمتن'+(d.title.keywords.length?' والكلمات المفتاحية':'')},
+    {n:3,label:'أسباب اختيار الموضوع'},
+    {n:4,label:'الإشكالية والفرضيات'},
+    {n:5,label:'الجهاز المنهجي'},
+    {n:6,label:'خطة البحث الأولية'},
+    {n:7,label:'الدراسات السابقة'},
+    {n:8,label:'المصادر والمراجع'},
+    {n:9,label:'النتائج المتوقعة'},
+  ];
+  let n=10;
+  if(tlHas){sections.push({n:n,label:'الجدول الزمني'});n++;}
+  sections.push({n:n,label:'فهرس التصور'});
+  const entries=sections.map(s=>`<div class="te l1"><span style="min-width:24px;color:var(--muted);font-size:12px;flex-shrink:0">${s.n}</span><span>${s.label}</span><span class="te-dots"></span></div>`).join('');
+  return hdr('13','فهرس التصور البحثي','فهرس محتويات هذا التصور — يتكيّف تلقائيًا مع المحتوى.')+
+  `<div class="toc-box"><div class="toc-title">فهرس محتويات التصور البحثي</div>${entries}</div>
+  <p style="font-size:11.5px;color:var(--muted);margin-top:10px;text-align:center">يتغيّر الفهرس تلقائيًا — عُد لأي خطوة للتعديل</p>`
+  +navBtns(true,true);
+}
+
+/* ══════════════════════════════════════════════════════
+   POST RENDER (live events)
+══════════════════════════════════════════════════════ */
+function postRender(id){
+  if(id==='title'){
+    const t=$('t_txt');if(!t)return;
+    t.addEventListener('input',()=>{
+      D.title.text=t.value;
+      const mc=$('mainEl');
+      const wc=t.value.trim().split(/\s+/).filter(Boolean).length;
+      let old=mc.querySelector('.wc');
+      const msg=wc>0?(wc<=15?`<div class="wc ok">✓ ${wc} كلمة</div>`:`<div class="wc warn">⚠ ${wc} كلمة — يُفضَّل أقل من 15</div>`):'';
+      if(old&&msg)old.outerHTML=msg;
+      else if(!old&&msg)t.insertAdjacentHTML('afterend',msg);
+      else if(old&&!msg)old.remove();
+    });
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   SAVE
+══════════════════════════════════════════════════════ */
+function save(){
+  const id=STEPS[cur].id;
+  switch(id){
+    case 'cover':
+      Object.assign(D.cover,{univ:gv('cv_u'),fac:gv('cv_f'),dept:gv('cv_d'),branch:gv('cv_br'),specialty:gv('cv_sp'),s1:gv('cv_s1'),s2:gv('cv_s2'),sup:gv('cv_sup'),degree:gv('cv_deg'),year:gv('cv_y')});break;
+    case 'title':
+      D.title.text=gv('t_txt');D.title.scope=gv('t_scope');D.title.corpus=gv('t_corpus');D.title.corpusType=gv('t_ctype');break;
+    case 'reasons':
+      D.reasons.subj=gv('rs_subj');D.reasons.obj=gv('rs_obj');break;
+    case 'problem':
+      D.problem.main=gv('pr_main');
+      D.problem.subs=D.problem.subs.map((_,i)=>gv(`sub_${i}`)).filter((_,i)=>!!$(`sub_${i}`));
+      D.problem.hyps=D.problem.hyps.map((_,i)=>gv(`hyp_${i}`)).filter((_,i)=>!!$(`hyp_${i}`));break;
+    case 'method':
+      D.method.chosen=gv('meth_txt');D.method.justify=gv('meth_j');D.method.tools=gv('meth_t');break;
+    case 'plan':
+      D.plan.intro=gv('pl_intro');D.plan.conc=gv('pl_conc');
+      D.plan.chs=D.plan.chs.map((c,ci)=>{
+        const title=gv(`ch_t_${ci}`)||c.title;
+        const secs=c.secs.map((_,si)=>gv(`sec_${ci}_${si}`)).filter((_,si)=>!!$(`sec_${ci}_${si}`));
+        return{title,secs:secs.length?secs:['']};
+      });break;
+    case 'prevlit':
+      D.prevlit.items=D.prevlit.items.map((it,i)=>({auth:gv(`pl_a_${i}`)||it.auth,year:gv(`pl_y_${i}`)||it.year,title:gv(`pl_t_${i}`)||it.title,link:gv(`pl_l_${i}`)||it.link}));
+      D.prevlit.added=gv('pl_added');break;
+    case 'sources':
+      D.sources.primary=D.sources.primary.map((_,i)=>({text:gv(`prim_${i}`)})).filter((_,i)=>!!$(`prim_${i}`));
+      D.sources.secondary=D.sources.secondary.map((_,i)=>({text:gv(`sec_${i}`)})).filter((_,i)=>!!$(`sec_${i}`));break;
+    case 'results':
+      D.results.items=D.results.items.map((_,i)=>gv(`res_${i}`)).filter((_,i)=>!!$(`res_${i}`));break;
+    case 'timeline':
+      D.timeline.rows=D.timeline.rows.map((_,i)=>({task:gv(`tl_t_${i}`),dur:gv(`tl_d_${i}`),unit:gv(`tl_u_${i}`)||'أشهر'}));break;
+    case 'format':
+      Object.assign(D.fmt,{
+        bodyFont:gv('fmt_bf'),bodySize:gv('fmt_bs'),
+        headFont:gv('fmt_hf'),
+        h1Size:gv('fmt_h1'),h2Size:gv('fmt_h2'),h3Size:gv('fmt_h3'),
+        lineHeight:gv('fmt_lh'),marginCm:gv('fmt_mg').replace(' سم',''),
+        paraSpace:gv('fmt_ps'),align:gv('fmt_al'),
+        coverCenter:!!$('fmt_cv')&&$('fmt_cv').checked,
+        bodyColor:gv('fmt_bc')||D.fmt.bodyColor,
+        h1Color:gv('fmt_h1c')||D.fmt.h1Color,
+        h2Color:gv('fmt_h2c')||D.fmt.h2Color,
+        h3Color:gv('fmt_h3c')||D.fmt.h3Color,
+      });break;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   GLOBAL HANDLERS
+══════════════════════════════════════════════════════ */
+window.appendField=(id,txt)=>{const e=$(id);if(!e)return;e.value=e.value.trim()?(e.value.trim()+' + '+txt):txt;e.focus();};
+window.addKw=()=>{const i=$('kw_in');if(i&&i.value.trim()){D.title.keywords.push(i.value.trim());i.value='';render();}};
+window.rmKw=i=>{D.title.keywords.splice(i,1);render();};
+window.addSub=()=>{save();D.problem.subs.push('');render();};
+window.rmSub=i=>{save();D.problem.subs.splice(i,1);render();};
+window.addHyp=()=>{save();D.problem.hyps.push('');render();};
+window.rmHyp=i=>{save();D.problem.hyps.splice(i,1);render();};
+window.addCh=()=>{save();D.plan.chs.push({title:`الفصل ${D.plan.chs.length+1}`,secs:['']});render();};
+window.rmCh=ci=>{save();D.plan.chs.splice(ci,1);render();};
+window.addSec=ci=>{save();D.plan.chs[ci].secs.push('');render();};
+window.rmSec=(ci,si)=>{save();D.plan.chs[ci].secs.splice(si,1);if(!D.plan.chs[ci].secs.length)D.plan.chs[ci].secs=[''];render();};
+window.addPL=()=>{save();D.prevlit.items.push({auth:'',year:'',title:'',link:''});render();};
+window.rmPL=i=>{save();D.prevlit.items.splice(i,1);render();};
+window.addPrim=()=>{save();D.sources.primary.push({text:''});render();};
+window.rmPrim=i=>{save();D.sources.primary.splice(i,1);render();};
+window.addSec2=()=>{save();D.sources.secondary.push({text:''});render();};
+window.rmSec2=i=>{save();D.sources.secondary.splice(i,1);render();};
+window.addRes=()=>{save();D.results.items.push('');render();};
+window.rmRes=i=>{save();D.results.items.splice(i,1);render();};
+window.addTL=()=>{save();D.timeline.rows.push({task:'',dur:'',unit:'أشهر'});render();};
+window.syncColor=(colorId,hexId)=>{
+  const hex=$(hexId);const col=$(colorId);
+  if(!hex||!col)return;
+  const v=hex.value.trim();
+  if(/^#[0-9A-Fa-f]{6}$/.test(v)){col.value=v;updateFmtPreview();}
+};
+function updateFmtPreview(){
+  const pv=$('fmt_preview');if(!pv)return;
+  save();pv.innerHTML=fmtPreview(D.fmt);
+}
+window.saveFmtAndExport=()=>{save();exportWord();};
+/* live preview on any format input change */
+document.addEventListener('input',e=>{
+  if(e.target&&e.target.id&&e.target.id.startsWith('fmt_')){
+    if(e.target.type==='color'){
+      const hexId=e.target.id+'_hex';const hexEl=$(hexId);
+      if(hexEl)hexEl.value=e.target.value;
+    }
+    updateFmtPreview();
+  }
+});
+window.goTo=goTo;window.go=go;
+
+/* ══════════════════════════════════════════════════════
+   EXPORT — TXT
+══════════════════════════════════════════════════════ */
+window.exportTxt=()=>{
+  save();const d=D;const L=[];const s=t=>L.push(t);
+  const tlHas=d.timeline.rows.filter(r=>r.task).length>0;
+  s('══════════════════════════════════════════════');
+  s('           التصور البحثي');
+  s('══════════════════════════════════════════════');s('');
+  s('الجامعة: '+d.cover.univ+' | الكلية: '+d.cover.fac+' | القسم: '+d.cover.dept);
+  s('عنوان تصور البحث: '+d.title.text);
+  s('إعداد: '+d.cover.s1+(d.cover.s2?' / '+d.cover.s2:''));
+  s('إشراف: '+d.cover.sup+'   |   السنة الجامعية: '+d.cover.year);s('');
+  if(d.title.scope)s('الحقبة الزمنية: '+d.title.scope);
+  s('المتن: '+d.title.corpusType+' — '+d.title.corpus);
+  if(d.title.keywords.length)s('الكلمات المفتاحية: '+d.title.keywords.join(' — '));s('');
+  s('أولًا: أسباب اختيار الموضوع');s('─────────────────────────────');
+  s('الأسباب الذاتية:');s(d.reasons.subj);s('');
+  s('الأسباب الموضوعية:');s(d.reasons.obj);s('');
+  s('ثانيًا: الإشكالية والفرضيات');s('─────────────────────────────');
+  s('الإشكالية المحورية:');s(d.problem.main);s('');
+  if(d.problem.subs.filter(Boolean).length){s('الأسئلة الفرعية:');d.problem.subs.filter(Boolean).forEach((q,i)=>s(`  ${i+1}. ${q}`));s('');}
+  if(d.problem.hyps.filter(Boolean).length){s('الفرضيات:');d.problem.hyps.filter(Boolean).forEach((h,i)=>s(`  ${i+1}. ${h}`));s('');}
+  s('ثالثًا: الجهاز المنهجي');s('─────────────────────────────');
+  s(d.method.chosen);s(d.method.justify);if(d.method.tools){s('');s('الأدوات الإجرائية: '+d.method.tools);}s('');
+  s('رابعًا: خطة البحث الأولية');s('─────────────────────────────');
+  if(d.plan.intro)s('المقدمة: '+d.plan.intro);
+  d.plan.chs.forEach((c,i)=>{s(`\n${c.title}`);c.secs.filter(Boolean).forEach((sc,j)=>s(`  ${j+1}. ${sc}`));});
+  if(d.plan.conc)s('\nالخاتمة: '+d.plan.conc);s('');
+  s('خامسًا: الدراسات السابقة');s('─────────────────────────────');
+  d.prevlit.items.forEach((it,i)=>s(`${i+1}. ${it.auth} (${it.year}). ${it.title}${it.link?' — '+it.link:''}`));
+  if(d.prevlit.added){s('');s('الجديد الذي يُضيفه البحث: '+d.prevlit.added);}s('');
+  s('سادسًا: المصادر والمراجع');s('─────────────────────────────');
+  s('المصادر الأولية:');d.sources.primary.filter(r=>r.text).forEach((r,i)=>s(`  ${i+1}. ${r.text}`));
+  s('');s('المراجع النقدية والنظرية:');d.sources.secondary.filter(r=>r.text).forEach((r,i)=>s(`  ${i+1}. ${r.text}`));s('');
+  s('سابعًا: النتائج المتوقعة');s('─────────────────────────────');
+  d.results.items.filter(Boolean).forEach((r,i)=>s(`${i+1}. ${r}`));s('');
+  if(tlHas){s('ثامنًا: الجدول الزمني');s('─────────────────────────────');d.timeline.rows.filter(r=>r.task).forEach((r,i)=>s(`${i+1}. ${r.task} — ${r.dur} ${r.unit}`));s('');}
+  s('════════ فهرس محتويات التصور ════════');
+  ['صفحة الغلاف','العنوان والمتن','أسباب اختيار الموضوع','الإشكالية والفرضيات','الجهاز المنهجي','خطة البحث الأولية','الدراسات السابقة','المصادر والمراجع','النتائج المتوقعة',...(tlHas?['الجدول الزمني']:[]),'فهرس التصور'].forEach((item,i)=>s(`${i+1}. ${item}`));
+  s('');s('══════════════════════════════════════════════');
+  const blob=new Blob([L.join('\n')],{type:'text/plain;charset=utf-8'});
+  mobileDownload(blob,'التصور_البحثي.txt');
+};
+
+/* ══════════════════════════════════════════════════════
+   EXPORT — WORD
+══════════════════════════════════════════════════════ */
+window.exportWord=()=>{
+  save();const d=D;const f=d.fmt;
+  const tlHas=d.timeline.rows.filter(r=>r.task).length>0;
+  const ord=['','أولًا','ثانيًا','ثالثًا','رابعًا','خامسًا','سادسًا','سابعًا','ثامنًا'];
+  const H2=(n,t)=>`<h2>${ord[n]}: ${t}</h2>`;
+  const tocItems=['صفحة الغلاف','العنوان والمتن','أسباب اختيار الموضوع','الإشكالية والفرضيات','الجهاز المنهجي','خطة البحث الأولية','الدراسات السابقة','المصادر والمراجع','النتائج المتوقعة',...(tlHas?['الجدول الزمني']:[]),'فهرس التصور'];
+  const toc=tocItems.map((t,i)=>`<p style="margin:5pt 0">${i+1}. ${t}</p>`).join('');
+
+  const coverAlign=f.coverCenter?'center':'right';
+  const margin=f.marginCm||'2.5';
+
+  const html=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+  <style>
+    body{font-family:'${f.bodyFont}',Arial,sans-serif;direction:rtl;font-size:${f.bodySize}pt;margin:${margin}cm;color:${f.bodyColor};line-height:${f.lineHeight};text-align:${f.align}}
+    p{margin-bottom:${f.paraSpace}pt}
+    h1{font-family:'${f.headFont}',Arial,sans-serif;font-size:${f.h1Size}pt;text-align:${coverAlign};color:${f.h1Color};padding-bottom:8pt;margin-bottom:12pt}
+    h2{font-family:'${f.headFont}',Arial,sans-serif;font-size:${f.h2Size}pt;color:${f.h2Color};margin-top:20pt;margin-bottom:9pt}
+    h3{font-family:'${f.headFont}',Arial,sans-serif;font-size:${f.h3Size}pt;color:${f.h3Color};margin-top:12pt;margin-bottom:5pt}
+    .cover{text-align:${coverAlign};padding:28pt 0;margin-bottom:0}
+    .page-break{page-break-after:always;margin:0;padding:0;height:0;border:none}
+    .cf{margin:5pt 0;font-family:'${f.bodyFont}',Arial,sans-serif;font-size:${f.bodySize}pt}
+    .cl{color:#7a6a52;font-size:${Math.max(10,parseInt(f.bodySize)-2)}pt}
+    ol,ul{padding-right:18pt}
+    li{margin-bottom:4pt}
+    table{width:100%;border-collapse:collapse;margin-top:7pt}
+    td,th{border:1pt solid #c8b89a;padding:5pt;font-size:${Math.max(10,parseInt(f.bodySize)-2)}pt}
+    th{background:#f0e8d8;font-weight:bold}
+    .toc-item{margin:5pt 0}
+  </style></head><body>
+  <div class="cover">
+    <div class="cf" style="font-weight:bold"><span class="cl">الجامعة: </span>${d.cover.univ}</div>
+    <div class="cf"><span class="cl">الكلية: </span>${d.cover.fac}</div>
+    <div class="cf"><span class="cl">القسم: </span>${d.cover.dept}</div>
+    ${d.cover.branch?`<div class="cf"><span class="cl">الفرع: </span>${d.cover.branch}</div>`:''}
+    <div style="height:16pt"></div>
+    <h1>عنوان تصور البحث</h1>
+    <div class="cf" style="font-size:${parseInt(f.bodySize)+2}pt;font-weight:bold;color:${f.h1Color};text-align:${coverAlign}">${d.title.text}</div>
+    ${d.title.scope?`<div class="cf" style="font-size:${parseInt(f.bodySize)-1}pt;color:#7a6a52;text-align:${coverAlign}">${d.title.scope}</div>`:''}
+    ${d.cover.specialty?`<div style="height:8pt"></div><div class="cf"><span class="cl">التخصص: </span>${d.cover.specialty}</div>`:''}
+    <div style="height:14pt"></div>
+    <div class="cf" style="font-weight:bold">إعداد الطالب(ة):</div>
+    <div class="cf" style="padding-right:14pt">• ${d.cover.s1}</div>
+    ${d.cover.s2?`<div class="cf" style="padding-right:14pt">• ${d.cover.s2}</div>`:''}
+    <div style="height:9pt"></div>
+    <div class="cf"><span class="cl">تحت إشراف: </span>${d.cover.sup}</div>
+    <div class="cf"><span class="cl">السنة الجامعية: </span>${d.cover.year}</div>
+  </div>
+  <div class="page-break"></div>
+
+  ${d.title.corpus?`<h2>المتن الأدبي (Corpus)</h2>
+  <p><strong>نوع المتن:</strong> ${d.title.corpusType}</p>
+  <p>${d.title.corpus}</p>`:''}
+  ${d.title.keywords.length?`<p><strong>الكلمات المفتاحية:</strong> ${d.title.keywords.join(' — ')}</p>`:''}
+
+  ${H2(1,'أسباب اختيار الموضوع')}
+  <h3>الأسباب الذاتية</h3><p>${d.reasons.subj}</p>
+  <h3>الأسباب الموضوعية</h3><p>${d.reasons.obj}</p>
+
+  ${H2(2,'الإشكالية والفرضيات')}
+  <h3>الإشكالية المحورية</h3><p>${d.problem.main}</p>
+  ${d.problem.subs.filter(Boolean).length?`<h3>الأسئلة الفرعية</h3><ol>${d.problem.subs.filter(Boolean).map(q=>`<li>${q}</li>`).join('')}</ol>`:''}
+  ${d.problem.hyps.filter(Boolean).length?`<h3>الفرضيات</h3><ol>${d.problem.hyps.filter(Boolean).map(h=>`<li>${h}</li>`).join('')}</ol>`:''}
+
+  ${H2(3,'الجهاز المنهجي')}
+  <h3>المنهج المعتمد</h3><p>${d.method.chosen}</p>
+  ${d.method.justify?`<h3>مبررات الاختيار</h3><p>${d.method.justify}</p>`:''}
+  ${d.method.tools?`<h3>الأدوات الإجرائية</h3><p>${d.method.tools}</p>`:''}
+
+  ${H2(4,'خطة البحث الأولية')}
+  ${d.plan.intro?`<h3>المقدمة</h3><p>${d.plan.intro}</p>`:''}
+  ${d.plan.chs.map(c=>`<h3>${c.title}</h3><ul>${c.secs.filter(Boolean).map(s=>`<li>${s}</li>`).join('')}</ul>`).join('')}
+  ${d.plan.conc?`<h3>الخاتمة</h3><p>${d.plan.conc}</p>`:''}
+
+  ${H2(5,'الدراسات السابقة')}
+  <ol>${d.prevlit.items.filter(it=>it.auth||it.title).map(it=>`<li>${it.auth} (${it.year}). <em>${it.title}</em>${it.link?' — '+it.link:''}</li>`).join('')}</ol>
+  ${d.prevlit.added?`<h3>الجديد الذي يُضيفه البحث</h3><p>${d.prevlit.added}</p>`:''}
+
+  ${H2(6,'المصادر والمراجع')}
+  <h3>المصادر الأولية (النصوص الأدبية)</h3>
+  <ol>${d.sources.primary.filter(r=>r.text).map(r=>`<li>${r.text}</li>`).join('')}</ol>
+  <h3>المراجع النقدية والنظرية</h3>
+  <ol>${d.sources.secondary.filter(r=>r.text).map(r=>`<li>${r.text}</li>`).join('')}</ol>
+
+  ${H2(7,'النتائج المتوقعة')}
+  <ol>${d.results.items.filter(Boolean).map(r=>`<li>${r}</li>`).join('')}</ol>
+
+  ${tlHas?H2(8,'الجدول الزمني')+`<table><tr><th>المرحلة</th><th>المدة</th><th>الوحدة</th></tr>${d.timeline.rows.filter(r=>r.task).map(r=>`<tr><td>${r.task}</td><td>${r.dur}</td><td>${r.unit}</td></tr>`).join('')}</table>`:''}
+
+  <h2>فهرس محتويات التصور البحثي</h2>
+  ${toc}
+  </body></html>`;
+
+  try{
+    if(typeof htmlDocx!=='undefined'){
+      const blob=htmlDocx.asBlob(html);
+      mobileDownload(blob,'التصور_البحثي.docx');
+      toast('تم تصدير Word ✓');
+    }else{
+      const blob=new Blob([html],{type:'application/msword;charset=utf-8'});
+      mobileDownload(blob,'التصور_البحثي.doc');
+      toast('تم التصدير بصيغة .doc ✓');
+    }
+  }catch(e){
+    const blob=new Blob([html],{type:'application/msword;charset=utf-8'});
+    mobileDownload(blob,'التصور_البحثي.doc');
+  }
+};
+
+/* ══════════════════════════════════════════════════════
+   DEMO — مثال تجريبي جاهز
+══════════════════════════════════════════════════════ */
+window.loadDemo=function(){
+  if(!confirm('سيتم استبدال البيانات الحالية بمثال تجريبي. هل تريد المتابعة؟'))return;
+  D=blank();
+  /* ── صفحة الغلاف ── */
+  D.cover={
+    univ:'جامعة الجزائر 2 أبو القاسم سعد الله',
+    fac:'كلية الآداب واللغات',
+    dept:'قسم اللغة العربية وآدابها',
+    branch:'أدب عربي',
+    specialty:'الشعر العربي الحديث ونقده',
+    s1:'الطالب: أحمد بوعلام',
+    s2:'',
+    sup:'الأستاذ الدكتور ع.بن دحمان',
+    degree:'ماجستير — السنة الأولى',
+    year:'2025 / 2026'
+  };
+  /* ── العنوان والمتن ── */
+  D.title={
+    text:'الصورة الشعرية في الشعر العربي المعاصر: دراسة تحليلية',
+    scope:'الشعر العربي المعاصر (القرن العشرون)',
+    corpus:'مجموعة مختارة من قصائد: بدر شاكر السياب، محمود درويش، نازك الملائكة، وأدونيس',
+    corpusType:'ديوان شعري',
+    keywords:['الصورة الشعرية','الشعر الحديث','الاستعارة','السيميائية','الحداثة الشعرية']
+  };
+  /* ── أسباب الاختيار ── */
+  D.reasons={
+    subj:'ينبثق هذا البحث من اهتمام شخصي عميق بالشعر العربي الحديث، ولا سيما تلك القصائد التي تتجاوز فيها الصورة وظيفتها التزيينية لتصبح روح النص وجوهره. وقد أثارت قراءاتي المبكرة في دواوين السياب ودرويش تساؤلات جوهرية حول آليات اشتغال الصورة في بنية القصيدة المعاصرة.',
+    obj:'يكتسب الموضوع أهميته الموضوعية من وجود فجوة نقدية واضحة؛ إذ اكتفى كثير من الدراسات بالرصد البلاغي الكلاسيكي للصورة دون تتبع تحولاتها الوظيفية في الشعر الحديث. يسعى هذا البحث إلى تقديم إسهام نظري ومنهجي يوضح كيفية بناء الصورة في القصيدة المعاصرة باعتماد المنهج الوصفي التحليلي.'
+  };
+  /* ── الإشكالية والفرضيات ── */
+  D.problem={
+    main:'كيف تتجلى الصورة الشعرية بوظائفها ودلالاتها الجديدة في الشعر العربي المعاصر، وما هي أوجه التغيير التي طرأت عليها لتعكس رؤى شعراء الحداثة وتتجاوز الحدود التقليدية لمفهوم الصورة في النقد الكلاسيكي؟',
+    subs:[
+      'كيف يُعرّف الشعراء والمُنظّرون المعاصرون مفهوم الصورة الشعرية؟',
+      'ما وجه الاختلاف في استخدام الصورة بين الشعر القديم والشعر المعاصر؟',
+      'ما هي العلاقة بين الصورة ورؤية الشاعر للعالم وسياقه الثقافي والسياسي؟',
+      'كيف تتفاعل الصور داخل النص الشعري الواحد لتشكّل بنية دلالية متكاملة؟'
+    ],
+    hyps:[
+      'الصورة في الشعر الحديث أكثر جرأةً وتجريبية، تحولت إلى وسيلة للتعبير عن معانٍ نفسية وعاطفية معمّقة بدلاً من الصيغ التقليدية.',
+      'تتفاعل الصور في القصائد المعاصرة تفاعلاً كلياً بحيث لا يمكن فصل صورة عن أخرى داخل النص الواحد دون الإخلال بدلالته.'
+    ]
+  };
+  /* ── الجهاز المنهجي ── */
+  D.method={
+    chosen:'المنهج الوصفي التحليلي + المنهج السيميائي',
+    justify:'يُعدّ المنهج الوصفي التحليلي الأنسب لطبيعة هذه الدراسة لأنه يتيح تفكيك مكونات الصورة الشعرية ووصف آليات اشتغالها داخل النص، فيما يُضيف البُعد السيميائي عمقاً في قراءة الأنظمة الدلالية والرمزية التي تحملها الصورة.',
+    tools:'التشبيه — الاستعارة — الرمز — الأيقون — المحور الاستبدالي — السياق الثقافي والتاريخي'
+  };
+  /* ── خطة البحث ── */
+  D.plan={
+    intro:'تتناول المقدمة إشكالية البحث وأسباب اختياره، وتعريف الصورة الشعرية وتطورها من المفهوم البلاغي الكلاسيكي إلى المفهوم الوظيفي الحديث، مع عرض موجز لمناهج التحليل المعتمدة وتقسيمات البحث.',
+    chs:[
+      {
+        title:'الفصل الأول: الإطار النظري ومفهوم الصورة الشعرية',
+        secs:[
+          'مفهوم الصورة في النقد العربي الكلاسيكي (الجرجاني، ابن رشيق)',
+          'تطور مفهوم الصورة في النقد الحديث (جابر عصفور، إحسان عباس)',
+          'الصورة الشعرية بين النظرية والتطبيق'
+        ]
+      },
+      {
+        title:'الفصل الثاني: مراجعة الدراسات السابقة',
+        secs:[
+          'الدراسات التي تناولت الصورة في الشعر العربي القديم',
+          'الدراسات التي تناولت الصورة في شعر الحداثة',
+          'الفجوة المعرفية وموقع هذا البحث منها'
+        ]
+      },
+      {
+        title:'الفصل الثالث: أنماط الصورة الشعرية (1) — التشبيه والاستعارة',
+        secs:[
+          'صور التشبيه ودلالاتها في نماذج مختارة من السياب ونازك',
+          'الاستعارة المفردة والمركّبة وأثرها الدلالي',
+          'ربط الصور بالسياق النفسي والوجودي للشاعر'
+        ]
+      },
+      {
+        title:'الفصل الرابع: أنماط الصورة الشعرية (2) — الرمز والأسطورة',
+        secs:[
+          'توظيف الرمز في قصائد أدونيس ومحمود درويش',
+          'الصورة الأسطورية وعلاقتها بالهوية والانتماء',
+          'الصور الحسية الطبيعية ودلالاتها الوطنية والإنسانية'
+        ]
+      },
+      {
+        title:'الفصل الخامس: المقارنة والتركيب الدلالي',
+        secs:[
+          'مقارنة أنماط الصورة بين الشعراء المدروسين',
+          'تفاعل الصور وتشابكها داخل النص الواحد',
+          'الصورة الشعرية مرآةً للرؤية الكونية للشاعر'
+        ]
+      }
+    ],
+    conc:'تتضمن الخاتمة ملخصاً للنتائج المتوصل إليها حول تطور دور الصورة الشعرية، وأبرز الأنماط المرصودة في العينة المدروسة، مع توصيات بحثية مستقبلية ورأي في إمكانية توسيع المنهج إلى دراسات الشعر النثري.'
+  };
+  /* ── الدراسات السابقة ── */
+  D.prevlit={
+    items:[
+      {auth:'عباس، إحسان',year:'1992',title:'الصورة الفنية في التراث النقدي والبلاغي عند العرب',link:'تناولت المفهوم التراثي للصورة مع إغفال نسبي لتجليّاتها في الشعر الحديث'},
+      {auth:'ناصف، مصطفى',year:'1984',title:'الصورة الأدبية',link:'دراسة نظرية شاملة غير أنها لم تُطبَّق على نصوص المدونة المختارة في بحثنا'},
+      {auth:'موسى صالح، بشرى',year:'1994',title:'الصورة الشعرية في النقد العربي الحديث',link:'أقرب الدراسات لموضوعنا لكنها تتوقف عند السبعينيات ولا تشمل مرحلة التسعينيات وما بعدها'},
+      {auth:'اليافي، نعيم',year:'1992',title:'تطور الصورة الفنية في الشعر العربي الحديث',link:'توافق المنهج التاريخي مع بحثنا مع اختلاف في التركيز المنهجي'}
+    ],
+    added:'يُضيف هذا البحث قراءة سيميائية-تحليلية لنصوص لم تُدرَس بعمق كافٍ ضمن هذا الإطار، كما يعتمد منهجاً مزدوجاً (وصفي + سيميائي) يتيح قراءة الصورة على مستوى البنية والدلالة معاً.'
+  };
+  /* ── المصادر والمراجع ── */
+  D.sources={
+    primary:[
+      {text:'السياب، بدر شاكر. ديوان بدر شاكر السياب. بيروت: دار العودة، 1971.'},
+      {text:'درويش، محمود. الديوان (مختارات). بيروت: دار الآداب، 2002.'},
+      {text:'الملائكة، نازك. ديوان نازك الملائكة. بيروت: دار العودة، 1979.'},
+      {text:'أدونيس. الأعمال الشعرية الكاملة. بيروت: دار الساقي، 2006.'}
+    ],
+    secondary:[
+      {text:'الجرجاني، عبد القاهر. دلائل الإعجاز. دار الفكر العربي، ط3، 1977.'},
+      {text:'عباس، إحسان. الصورة الفنية في التراث النقدي والبلاغي عند العرب. المركز الثقافي العربي، 1992.'},
+      {text:'ناصف، مصطفى. الصورة الأدبية. دار الأندلس، ط3، 1984.'},
+      {text:'موسى صالح، بشرى. الصورة الشعرية في النقد العربي الحديث. المركز الثقافي العربي، 1994.'},
+      {text:'اليافي، نعيم. تطور الصورة الفنية في الشعر العربي الحديث. مجلة الموقف الأدبي، 1992.'},
+      {text:'عصفور، جابر. الصورة الفنية في التراث النقدي والبلاغي. دار التنوير، 1983.'}
+    ]
+  };
+  /* ── النتائج المتوقعة ── */
+  D.results={
+    items:[
+      'الكشف عن تنوع دلالات الصورة (الطبيعة، الوطن، الهوية، المرأة) وفق الخلفيات الفكرية لكل شاعر',
+      'إثبات أن الصورة في الشعر المعاصر تحولت من وظيفة تزيينية إلى وظيفة وجودية-دلالية',
+      'تقديم نموذج تحليلي قابل للتطبيق على نصوص شعرية أخرى',
+      'إثراء الدراسات النقدية العربية بمقاربة تجمع بين الوصف والسيميائية'
+    ]
+  };
+  /* ── الجدول الزمني ── */
+  D.timeline={
+    rows:[
+      {task:'المسح المكتبي وبناء الإطار النظري',dur:'3',unit:'أشهر'},
+      {task:'اختيار العينة وجمع النصوص',dur:'1',unit:'أشهر'},
+      {task:'التحليل النصي والتصنيف',dur:'4',unit:'أشهر'},
+      {task:'كتابة الفصول',dur:'3',unit:'أشهر'},
+      {task:'المراجعة النهائية والتدقيق',dur:'1',unit:'أشهر'}
+    ]
+  };
+  cur=0;
+  localStorage.setItem('ARProposal4',JSON.stringify(D));
+  buildNav();render();
+  toast('✓ تم تحميل المثال التجريبي');
+};
+
+/* ── تنزيل متوافق مع الهاتف والتابلت ── */
+function mobileDownload(blob, filename){
+  const url=URL.createObjectURL(blob);
+  // iOS Safari: doesn't support a.click() on blob — open in new tab instead
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS){
+    // Show a download link the user can tap
+    showMobileLink(url,filename);
+  }else{
+    const a=document.createElement('a');
+    a.href=url;a.download=filename;
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),2000);
+  }
+}
+
+function showMobileLink(url,filename){
+  // Create a tap-to-download overlay for iOS
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20000;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML=`<div style="background:#fff;border-radius:14px;padding:28px 24px;text-align:center;max-width:320px;width:100%;font-family:'Noto Sans Arabic',sans-serif;direction:rtl">
+    <div style="font-size:28px;margin-bottom:12px">📄</div>
+    <h3 style="font-family:'Amiri',serif;color:#0d4f4a;margin-bottom:10px;font-size:18px">الملف جاهز</h3>
+    <p style="font-size:13px;color:#7a6a52;margin-bottom:18px;line-height:1.7">اضغط على الزر أدناه لفتح الملف، ثم اختر "مشاركة" أو "حفظ في الملفات" من القائمة.</p>
+    <a href="${url}" target="_blank" download="${filename}"
+       style="display:block;background:#0d4f4a;color:#fff;padding:13px;border-radius:9px;text-decoration:none;font-size:14px;font-weight:600;margin-bottom:10px">
+       افتح الملف ←
+    </a>
+    <button onclick="this.closest('div').parentElement.remove()"
+      style="background:none;border:1px solid #c8b89a;color:#7a6a52;padding:10px 20px;border-radius:8px;font-family:'Noto Sans Arabic',sans-serif;font-size:13px;cursor:pointer;width:100%">
+      إغلاق
+    </button>
+  </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+}
+
+/* ── قائمة الهاتف (Drawer) ── */
+function buildDrawerNav(){
+  const el=document.getElementById('drawerNav');
+  if(!el)return;
+  let html='',lastGrp='';
+  STEPS.forEach((s,i)=>{
+    if(s.grp!==lastGrp){
+      if(lastGrp)html+='<div class="nav-sep"></div>';
+      html+=`<div class="nav-group-lbl">${s.grp}</div>`;
+      lastGrp=s.grp;
+    }
+    html+=`<li class="nav-item${i===cur?' active':''}${s.opt?' opt':''}" onclick="goTo(${i});closeDrawer()">
+      <span class="n-num">${i+1}</span><span>${s.lbl}</span></li>`;
+  });
+  el.innerHTML=html;
+}
+window.openDrawer=function(){
+  buildDrawerNav();
+  document.getElementById('navDrawer').classList.add('open');
+  document.getElementById('drawerOvl').style.display='block';
+};
+window.closeDrawer=function(){
+  document.getElementById('navDrawer').classList.remove('open');
+  document.getElementById('drawerOvl').style.display='none';
+};
+
+/* ── اتفاقية الاستخدام ── */
+function initTOS(){
+  const modal=document.getElementById('tosModal');
+  const agreed=localStorage.getItem('ARProposal_TOS_v2');
+  if(agreed){
+    // سبق القبول — أخفِ المودال فوراً
+    modal.style.display='none';
+  } else {
+    // لم يسبق القبول — أظهر مع تلاشٍ ناعم
+    modal.style.display='flex';
+    modal.style.opacity='0';
+    setTimeout(()=>{modal.style.transition='opacity .4s';modal.style.opacity='1';},30);
+  }
+}
+window.acceptTOS=function(){
+  localStorage.setItem('ARProposal_TOS_v2','accepted_'+new Date().toISOString());
+  const modal=document.getElementById('tosModal');
+  modal.style.transition='opacity .35s';
+  modal.style.opacity='0';
+  setTimeout(()=>{modal.style.display='none';},380);
+};
+
+buildNav();render();
+initTOS();
+</script>
+</body>
+</html>
